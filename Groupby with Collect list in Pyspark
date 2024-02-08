@@ -1,0 +1,23 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import collect_list
+
+# Initialize SparkSession
+spark = SparkSession.builder \
+    .appName("GroupByArray") \
+    .getOrCreate()
+
+# Sample data
+data = [(1, "Alice"),
+        (1, "Bob"),
+        (2, "Charlie"),
+        (2, "David"),
+        (3, "Eve")]
+
+# Create DataFrame
+df = spark.createDataFrame(data, ["id", "name"])
+
+# Group by "id" column and create an array of values from the "name" column
+grouped_df = df.groupBy("id").agg(collect_list("name").alias("names_array"))
+
+# Show the result
+grouped_df.show(truncate=False)
